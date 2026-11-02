@@ -50,7 +50,7 @@
       "url": "#pedidos"
     },
     "imagen": {
-      "src": "",
+      "src": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1600&h=1200&q=80",
       "alt": "Mesa de madera con hogazas de masa madre y laminados recién horneados",
       "placeholder": "Foto principal de vitrina o mesa de panadería (1600x1200)"
     }
@@ -61,7 +61,7 @@
       "descripcion": "Laminado de 72 horas de fermentación en frío con mantequilla sin sal.",
       "precio": 9.5,
       "imagen": {
-        "src": "",
+        "src": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&h=1000&q=80",
         "alt": "Croissant dorado mostrando su alveolado interior",
         "placeholder": "Croissant laminado (800x1000)"
       }
@@ -71,7 +71,7 @@
       "descripcion": "Interior cremoso y corteza caramelizada a alta temperatura. Porción individual.",
       "precio": 18.0,
       "imagen": {
-        "src": "",
+        "src": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&h=1000&q=80",
         "alt": "Porción de tarta de queso horneada al estilo vasco",
         "placeholder": "Tarta vasca (800x1000)"
       }
@@ -81,7 +81,7 @@
       "descripcion": "Trigo panadero, 20% centeno integral y fermentación natural con masa madre de cultivo propio.",
       "precio": 22.0,
       "imagen": {
-        "src": "",
+        "src": "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?auto=format&fit=crop&w=800&h=1000&q=80",
         "alt": "Hogaza de masa madre cortada por la mitad",
         "placeholder": "Hogaza de campo (800x1000)"
       }
@@ -91,7 +91,7 @@
       "descripcion": "Base de masa sablée de almendras, crema ácida de limón norteño y merengue italiano.",
       "precio": 16.5,
       "imagen": {
-        "src": "",
+        "src": "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=800&h=1000&q=80",
         "alt": "Tartaleta de limón con merengue tostado",
         "placeholder": "Tartaleta de limón (800x1000)"
       }
