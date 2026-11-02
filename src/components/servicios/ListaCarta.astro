@@ -1,0 +1,58 @@
+---
+import type { SiteData } from "../../lib/schema";
+
+interface Props {
+  site: SiteData;
+}
+
+const { site } = Astro.props;
+const mostrarPrecios = site.flags.mostrarPrecios;
+
+const formatPen = (val: number | null, desde: boolean) => {
+  if (val === null) return desde ? "Precio según tamaño" : "";
+  const num = `S/ ${val.toFixed(2)}`;
+  return desde ? `Desde ${num}` : num;
+};
+---
+
+<div class="divide-y divide-ink/15 border-t border-b border-ink/15">
+  {
+    site.carta.categorias.map((cat) => (
+      <article class="py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-4 space-y-2">
+          <h3 class="font-heading text-2xl sm:text-3xl text-ink">
+            {cat.nombre}
+          </h3>
+          <p class="text-sm text-ink/80 leading-relaxed">{cat.descripcion}</p>
+          <p class="pt-2">
+            <a
+              href={`/carta#${cat.id}`}
+              class="text-sm text-accent underline underline-offset-4 hover:text-ink"
+            >
+              Ver categoría completa
+            </a>
+          </p>
+        </div>
+
+        <ul class="lg:col-span-8 space-y-5">
+          {cat.items.slice(0, 3).map((item) => (
+            <li class="space-y-1">
+              <div class="flex items-baseline gap-3">
+                <span class="font-medium text-ink">{item.nombre}</span>
+                <span class="flex-1 border-b border-dotted border-ink/30" />
+                {mostrarPrecios && (
+                  <span class="text-sm font-medium text-ink shrink-0">
+                    {formatPen(item.precio, item.precioDesde)}
+                  </span>
+                )}
+              </div>
+              {item.descripcion && (
+                <p class="text-sm text-ink/75">{item.descripcion}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</div>

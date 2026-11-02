@@ -1,0 +1,487 @@
+---
+import "../styles/global.css";
+import rawSite from "../data/site.json";
+import { getValidatedSite } from "../lib/publish-guard";
+import { PRESETS, ALL_PRESET_FONT_URLS } from "../lib/presets";
+
+interface Props {
+  title?: string;
+  description?: string;
+  pathname?: string;
+}
+
+const { site, isDemo } = getValidatedSite(rawSite);
+const {
+  title = site.seo.titulo,
+  description = site.seo.descripcion,
+  pathname = Astro.url.pathname,
+} = Astro.props;
+
+const activePreset = PRESETS[site.diseno.preset];
+
+// Precedencia 3: estilo en línea generado solo para las llaves presentes en diseno.colores
+const inlineColorStyles: string[] = [];
+if (site.diseno.colores) {
+  const mapVar: Record<string, string> = {
+    surface: "--color-surface",
+    surfaceAlt: "--color-surface-alt",
+    ink: "--color-ink",
+    primary: "--color-primary",
+    onPrimary: "--color-on-primary",
+    primaryHover: "--color-primary-hover",
+    accent: "--color-accent",
+  };
+  for (const [key, val] of Object.entries(site.diseno.colores)) {
+    if (val && mapVar[key]) {
+      inlineColorStyles.push(`${mapVar[key]}: ${val}`);
+    }
+  }
+}
+
+const baseSiteUrl = Astro.site
+  ? Astro.site.toString().replace(/\/$/, "")
+  : "https://ejemplo.pe";
+const canonicalUrl = `${baseSiteUrl}${pathname}`;
+const menuUrl = `${baseSiteUrl}/carta`;
+
+const isHome = pathname === "/" || pathname === "";
+const prefix = isHome ? "" : "/";
+
+const ordenSet = new Set(site.diseno.orden);
+const showPedidosInNav = site.flags.mostrarPedidos && ordenSet.has("pedidos");
+const showNosotrosInNav = ordenSet.has("nosotros");
+const showUbicacionInNav = ordenSet.has("ubicacion");
+const showContactoInNav = ordenSet.has("contacto");
+
+const cleanPhone =
+  site.contacto.whatsapp.replace(/[^\d]/g, "") || "51900000000";
+const waHref = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(site.contacto.mensajeDefault)}`;
+
+const schemaType =
+  site.negocio.tipo === "cafeteria" ? "CafeOrCoffeeShop" : "Bakery";
+const jsonLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": schemaType,
+  name: site.negocio.nombre,
+  description: site.seo.descripcion,
+  url: baseSiteUrl,
+  telephone: site.contacto.telefonoMostrar,
+  hasMenu: menuUrl,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: site.negocio.direccion,
+    addressLocality: site.negocio.distrito,
+    addressRegion: site.negocio.ciudad,
+    addressCountry: "PE",
+  },
+};
+
+if (site.ubicacion.horariosSchema && site.ubicacion.horariosSchema.length > 0) {
+  jsonLd.openingHoursSpecification = site.ubicacion.horariosSchema.map((h) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: h.dayOfWeek,
+    opens: h.opens,
+    closes: h.closes,
+  }));
+}
+
+const fontUrls = isDemo ? ALL_PRESET_FONT_URLS : [activePreset.googleFontsUrl];
+---
+
+<!doctype html>
+<html
+  lang="es-PE"
+  data-preset={site.diseno.preset}
+  style={inlineColorStyles.length > 0
+    ? inlineColorStyles.join("; ")
+    : undefined}
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {
+      site.seo.ogImage && (
+        <meta property="og:image" content={site.seo.ogImage} />
+      )
+    }
+    <meta
+      name="theme-color"
+      content={site.diseno.colores?.surface ?? activePreset.themeColor}
+    />
+    {isDemo && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {fontUrls.map((url) => <link rel="stylesheet" href={url} />)}
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body
+    class="min-h-screen flex flex-col bg-surface text-ink antialiased selection:bg-primary selection:text-on-primary"
+  >
+    <a
+      href="#contenido-principal"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-primary focus:text-on-primary focus:px-4 focus:py-2"
+    >
+      Saltar al contenido
+    </a>
+
+    <header
+      class="sticky top-0 z-40 bg-surface/95 border-b border-ink/15 backdrop-blur-xs"
+    >
+      <div
+        class="max-w-7xl mx-auto px-5 md:px-10 h-20 flex items-center justify-between gap-6"
+      >
+        <a
+          href="/"
+          class="font-heading text-2xl md:text-3xl tracking-tight text-ink"
+        >
+          {site.negocio.nombre}
+        </a>
+
+        <nav
+          aria-label="Navegación principal"
+          class="hidden lg:flex items-center gap-8 text-sm text-ink/80"
+        >
+          <a href="/" class="hover:text-ink underline-offset-4 hover:underline"
+            >Inicio</a
+          >
+          <a
+            href="/carta"
+            class="hover:text-ink underline-offset-4 hover:underline">Carta</a
+          >
+          {
+            showPedidosInNav && (
+              <a
+                href={`${prefix}#pedidos`}
+                class="hover:text-ink underline-offset-4 hover:underline"
+              >
+                Pedidos
+              </a>
+            )
+          }
+          {
+            showNosotrosInNav && (
+              <a
+                href={`${prefix}#nosotros`}
+                class="hover:text-ink underline-offset-4 hover:underline"
+              >
+                Nosotros
+              </a>
+            )
+          }
+          {
+            showUbicacionInNav && (
+              <a
+                href={`${prefix}#ubicacion`}
+                class="hover:text-ink underline-offset-4 hover:underline"
+              >
+                Ubicación
+              </a>
+            )
+          }
+          {
+            showContactoInNav && (
+              <a
+                href={`${prefix}#contacto`}
+                class="hover:text-ink underline-offset-4 hover:underline"
+              >
+                Contacto
+              </a>
+            )
+          }
+        </nav>
+
+        <div class="hidden lg:flex items-center">
+          <a
+            href={waHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-5 py-2.5 text-sm font-medium bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) border border-primary motion-safe:transition-colors"
+          >
+            WhatsApp
+          </a>
+        </div>
+
+        <button
+          type="button"
+          id="btn-menu-movil"
+          aria-expanded="false"
+          aria-controls="panel-menu-movil"
+          class="lg:hidden px-3.5 py-2 text-sm border border-ink/15 text-ink rounded-(--radius-ui)"
+        >
+          Menú
+        </button>
+      </div>
+
+      <div
+        id="panel-menu-movil"
+        hidden
+        class="lg:hidden border-t border-ink/15 bg-surface px-5 py-6"
+      >
+        <nav
+          aria-label="Navegación móvil"
+          class="flex flex-col gap-4 text-base text-ink/90"
+        >
+          <a href="/" class="py-1 underline-offset-4 hover:underline">Inicio</a>
+          <a href="/carta" class="py-1 underline-offset-4 hover:underline"
+            >Carta</a
+          >
+          {
+            showPedidosInNav && (
+              <a
+                href={`${prefix}#pedidos`}
+                class="py-1 underline-offset-4 hover:underline"
+              >
+                Pedidos
+              </a>
+            )
+          }
+          {
+            showNosotrosInNav && (
+              <a
+                href={`${prefix}#nosotros`}
+                class="py-1 underline-offset-4 hover:underline"
+              >
+                Nosotros
+              </a>
+            )
+          }
+          {
+            showUbicacionInNav && (
+              <a
+                href={`${prefix}#ubicacion`}
+                class="py-1 underline-offset-4 hover:underline"
+              >
+                Ubicación
+              </a>
+            )
+          }
+          {
+            showContactoInNav && (
+              <a
+                href={`${prefix}#contacto`}
+                class="py-1 underline-offset-4 hover:underline"
+              >
+                Contacto
+              </a>
+            )
+          }
+          <a
+            href={waHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-2 text-center py-3 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) font-medium"
+          >
+            Escribir por WhatsApp
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenido-principal" class="flex-1">
+      <slot />
+    </main>
+
+    <footer
+      class="bg-surface-alt border-t border-ink/15 py-16 px-5 md:px-10 text-sm text-ink/80"
+    >
+      <div
+        class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-ink/15"
+      >
+        <div class="md:col-span-5 space-y-3">
+          <p class="font-heading text-2xl text-ink">{site.negocio.nombre}</p>
+          <p>{site.negocio.lema}</p>
+          <p class="text-ink/70">
+            {site.negocio.direccion} — {site.negocio.distrito}, {
+              site.negocio.ciudad
+            }
+          </p>
+        </div>
+
+        <div class="md:col-span-4 space-y-2">
+          <p class="font-medium text-ink">Información legal</p>
+          <p>Razón social: {site.footer.razonSocial}</p>
+          <p>RUC: {site.footer.ruc}</p>
+          <p class="pt-2">{site.footer.notaLegal}</p>
+        </div>
+
+        <div class="md:col-span-3 space-y-3 flex flex-col justify-between">
+          <div class="space-y-2">
+            <p class="font-medium text-ink">Enlaces obligatorios</p>
+            <p>
+              <a
+                href={site.footer.libroReclamacionesUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline underline-offset-4 hover:text-ink"
+              >
+                Libro de Reclamaciones (Indecopi)
+              </a>
+            </p>
+            <p>
+              <a
+                href="/privacidad"
+                class="underline underline-offset-4 hover:text-ink"
+              >
+                Política de privacidad
+              </a>
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-4 pt-4">
+            {
+              site.footer.redes.instagram && (
+                <a
+                  href={site.footer.redes.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline underline-offset-4 hover:text-ink"
+                >
+                  Instagram
+                </a>
+              )
+            }
+            {
+              site.footer.redes.facebook && (
+                <a
+                  href={site.footer.redes.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline underline-offset-4 hover:text-ink"
+                >
+                  Facebook
+                </a>
+              )
+            }
+            {
+              site.footer.redes.tiktok && (
+                <a
+                  href={site.footer.redes.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline underline-offset-4 hover:text-ink"
+                >
+                  TikTok
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row justify-between gap-4 text-xs text-ink/70"
+      >
+        <p>
+          © {new Date().getFullYear()}
+          {site.negocio.nombre}. Todos los derechos reservados.
+        </p>
+        <p>{site.negocio.distrito}, {site.negocio.ciudad} — Perú</p>
+      </div>
+    </footer>
+
+    <!-- Botón flotante de WhatsApp solo en móvil -->
+    <a
+      href={waHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Consultar por WhatsApp"
+      class="lg:hidden fixed bottom-5 right-5 z-40 px-4 py-3 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) border border-surface shadow-sm text-sm font-medium"
+    >
+      WhatsApp
+    </a>
+
+    {
+      isDemo && (
+        <aside
+          aria-label="Selector de estilo de demostración"
+          class="fixed bottom-5 left-5 z-40 bg-surface-alt border border-ink/15 p-2.5 rounded-(--radius-ui) text-xs flex items-center gap-2"
+        >
+          <label for="selector-preset-demo" class="text-ink/80 font-medium">
+            Estilo:
+          </label>
+          <select
+            id="selector-preset-demo"
+            class="bg-surface text-ink border border-ink/15 px-2 py-1 rounded-(--radius-ui)"
+          >
+            <option value="sobrio" selected={site.diseno.preset === "sobrio"}>
+              Sobrio
+            </option>
+            <option
+              value="editorial"
+              selected={site.diseno.preset === "editorial"}
+            >
+              Editorial
+            </option>
+            <option value="calido" selected={site.diseno.preset === "calido"}>
+              Cálido
+            </option>
+          </select>
+        </aside>
+      )
+    }
+
+    <script>
+      const btnMenu = document.getElementById("btn-menu-movil");
+      const panelMenu = document.getElementById("panel-menu-movil");
+
+      function closeMobileMenu() {
+        if (!btnMenu || !panelMenu) return;
+        btnMenu.setAttribute("aria-expanded", "false");
+        panelMenu.hidden = true;
+      }
+
+      btnMenu?.addEventListener("click", () => {
+        const expanded = btnMenu.getAttribute("aria-expanded") === "true";
+        btnMenu.setAttribute("aria-expanded", String(!expanded));
+        if (panelMenu) panelMenu.hidden = expanded;
+      });
+
+      panelMenu?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeMobileMenu);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          btnMenu?.getAttribute("aria-expanded") === "true"
+        ) {
+          closeMobileMenu();
+          btnMenu.focus();
+        }
+      });
+
+      // Selector de preset en modo demo (?estilo=)
+      const selectPreset = document.getElementById(
+        "selector-preset-demo",
+      ) as HTMLSelectElement | null;
+      if (selectPreset) {
+        const params = new URLSearchParams(window.location.search);
+        const paramEstilo = params.get("estilo");
+        if (
+          paramEstilo === "sobrio" ||
+          paramEstilo === "editorial" ||
+          paramEstilo === "calido"
+        ) {
+          document.documentElement.setAttribute("data-preset", paramEstilo);
+          selectPreset.value = paramEstilo;
+        }
+        selectPreset.addEventListener("change", () => {
+          const val = selectPreset.value;
+          document.documentElement.setAttribute("data-preset", val);
+          const url = new URL(window.location.href);
+          url.searchParams.set("estilo", val);
+          window.history.replaceState({}, "", url);
+        });
+      }
+    </script>
+  </body>
+</html>

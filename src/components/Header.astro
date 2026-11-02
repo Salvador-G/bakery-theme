@@ -1,0 +1,36 @@
+---
+const { data } = Astro.props;
+---
+
+<header
+  class="sticky top-0 z-50 bg-surface/90 backdrop-blur border-b border-ink/10 py-4 px-6 md:px-12 flex justify-between items-center"
+>
+  <div class="font-display text-2xl font-bold tracking-tight text-ink">
+    {data.meta.nombre}
+  </div>
+  <nav
+    class="hidden md:flex gap-6 font-body text-sm font-medium text-ink-muted"
+  >
+    {
+      data.diseno.orden.includes("catalogo") && (
+        <a href="#catalogo" class="hover:text-brand transition-colors">
+          Catálogo
+        </a>
+      )
+    }
+    {
+      data.diseno.orden.includes("pedido") && (
+        <a href="#pedido" class="hover:text-brand transition-colors">
+          Pedidos
+        </a>
+      )
+    }
+    {
+      data.diseno.orden.includes("locales") && (
+        <a href="#locales" class="hover:text-brand transition-colors">
+          Locales
+        </a>
+      )
+    }
+  </nav>
+</header>

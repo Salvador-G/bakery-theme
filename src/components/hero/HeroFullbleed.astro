@@ -1,0 +1,75 @@
+---
+import type { SiteData } from "../../lib/schema";
+
+interface Props {
+  site: SiteData;
+}
+
+const { site } = Astro.props;
+const { hero, negocio } = site;
+const hasSrc = Boolean(hero.imagen.src && hero.imagen.src.trim() !== "");
+---
+
+<section
+  class="relative min-h-[78vh] flex items-end border-b border-ink/15 overflow-hidden bg-surface-alt"
+>
+  <div class="absolute inset-0">
+    {
+      hasSrc ? (
+        <img
+          src={hero.imagen.src}
+          alt={hero.imagen.alt}
+          loading="eager"
+          fetchpriority="high"
+          class="w-full h-full object-cover"
+        />
+      ) : (
+        <div
+          role="img"
+          aria-label={hero.imagen.alt}
+          class="w-full h-full flex items-center justify-center p-6 bg-primary/10 text-ink/70"
+        >
+          <p class="text-sm border border-ink/15 px-4 py-2 bg-surface/90">
+            {hero.imagen.placeholder}
+          </p>
+        </div>
+      )
+    }
+    <!-- Velo sólido semitransparente que garantiza contraste con text-ink -->
+    <div class="absolute inset-0 bg-surface/85"></div>
+  </div>
+
+  <div
+    class="relative z-10 w-full max-w-7xl mx-auto py-(--space-section) px-5 md:px-10"
+  >
+    <div class="max-w-3xl space-y-6">
+      <p class="text-xs uppercase tracking-widest text-accent">
+        {hero.etiqueta} — {negocio.distrito}
+      </p>
+      <h1 class="font-heading text-4xl sm:text-6xl leading-[1.06] text-ink">
+        {hero.titulo}
+      </h1>
+      <p class="text-base sm:text-lg text-ink/90 max-w-2xl leading-relaxed">
+        {hero.subtitulo}
+      </p>
+      <div class="pt-2 flex flex-wrap items-center gap-5">
+        <a
+          href={hero.ctaPrimario.url}
+          class="px-7 py-3.5 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) border border-primary text-sm font-medium motion-safe:transition-colors"
+        >
+          {hero.ctaPrimario.texto}
+        </a>
+        {
+          hero.ctaSecundario && (
+            <a
+              href={hero.ctaSecundario.url}
+              class="px-6 py-3.5 bg-surface/90 border border-ink/15 text-ink hover:border-ink rounded-(--radius-ui) text-sm underline underline-offset-4 motion-safe:transition-colors"
+            >
+              {hero.ctaSecundario.texto}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

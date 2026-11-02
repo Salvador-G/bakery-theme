@@ -1,16 +1,667 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import rawSite from "../data/site.json";
+import { getValidatedSite } from "../lib/publish-guard";
+
+import HeroDividido from "../components/hero/HeroDividido.astro";
+import HeroCentrado from "../components/hero/HeroCentrado.astro";
+import HeroFullbleed from "../components/hero/HeroFullbleed.astro";
+import ListaCarta from "../components/servicios/ListaCarta.astro";
+import RejillaCarta from "../components/servicios/RejillaCarta.astro";
+import ImagenMarco from "../components/ImagenMarco.astro";
+
+const { site } = getValidatedSite(rawSite);
+const { flags, diseno } = site;
+
+const HeroComponent = {
+  dividido: HeroDividido,
+  centrado: HeroCentrado,
+  fullbleed: HeroFullbleed,
+}[diseno.variantes.hero];
+
+const ServiciosComponent = {
+  lista: ListaCarta,
+  rejilla: RejillaCarta,
+}[diseno.variantes.servicios];
+
+const cleanPhone =
+  site.contacto.whatsapp.replace(/[^\d]/g, "") || "51900000000";
+const waHref = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(site.contacto.mensajeDefault)}`;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  {
+    diseno.orden.map((seccionId) => {
+      if (seccionId === "hero") {
+        return <HeroComponent site={site} />;
+      }
+
+      if (seccionId === "destacados") {
+        return (
+          <section
+            id="destacados"
+            class="py-(--space-section) px-5 md:px-10 border-b border-ink/15"
+          >
+            <div class="max-w-7xl mx-auto space-y-12">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div class="space-y-2">
+                  <p class="text-xs uppercase tracking-widest text-accent">
+                    Selección del obrador
+                  </p>
+                  <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                    Especialidades de la casa
+                  </h2>
+                </div>
+                <a
+                  href="/carta"
+                  class="text-sm underline underline-offset-4 text-ink/80 hover:text-ink"
+                >
+                  Revisar la carta completa
+                </a>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {site.destacados.map((prod) => (
+                  <article class="space-y-4">
+                    <ImagenMarco
+                      imagen={prod.imagen}
+                      aspectClass="aspect-4/5"
+                    />
+                    <div class="space-y-1.5">
+                      <div class="flex justify-between items-baseline gap-3">
+                        <h3 class="font-heading text-xl text-ink">
+                          {prod.nombre}
+                        </h3>
+                        {flags.mostrarPrecios && prod.precio !== null && (
+                          <span class="text-sm font-medium text-ink shrink-0">
+                            S/ {prod.precio.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                      <p class="text-sm text-ink/80 leading-relaxed">
+                        {prod.descripcion}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "carta-resumen") {
+        return (
+          <section
+            id="carta-resumen"
+            class="py-(--space-section) px-5 md:px-10 bg-surface-alt border-b border-ink/15"
+          >
+            <div class="max-w-7xl mx-auto space-y-12">
+              <div class="max-w-2xl space-y-3">
+                <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                  Nuestra carta por categorías
+                </h2>
+                <p class="text-sm sm:text-base text-ink/80">
+                  Elaboraciones diarias horneadas en tienda y bebidas preparadas
+                  al momento.
+                </p>
+              </div>
+
+              <ServiciosComponent site={site} />
+
+              <div class="pt-2">
+                <a
+                  href="/carta"
+                  class="inline-block px-7 py-3.5 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) border border-primary text-sm font-medium motion-safe:transition-colors"
+                >
+                  Ver la carta completa y alérgenos
+                </a>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "pedidos" && flags.mostrarPedidos) {
+        return (
+          <section
+            id="pedidos"
+            class="py-(--space-section) px-5 md:px-10 border-b border-ink/15"
+          >
+            <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div class="lg:col-span-5 space-y-4">
+                <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                  {site.pedidos.titulo}
+                </h2>
+                <p class="text-sm text-ink/80 leading-relaxed">
+                  Tiempo mínimo de preparación:{" "}
+                  <strong>{site.pedidos.anticipacionHoras} horas</strong> de
+                  anticipación.
+                </p>
+                <p class="text-sm text-ink/75 leading-relaxed border-l-2 border-primary pl-4">
+                  {site.pedidos.nota}
+                </p>
+              </div>
+
+              <form
+                id="form-pedidos-wa"
+                data-whatsapp={cleanPhone}
+                data-horas={site.pedidos.anticipacionHoras}
+                data-negocio={site.negocio.nombre}
+                class="lg:col-span-7 bg-surface-alt border border-ink/15 p-6 sm:p-8 rounded-(--radius-ui) space-y-5"
+              >
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label
+                      for="ped-producto"
+                      class="block text-sm font-medium text-ink mb-1.5"
+                    >
+                      Producto a encargar
+                    </label>
+                    <select
+                      id="ped-producto"
+                      name="producto"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2.5 text-sm rounded-(--radius-ui)"
+                    >
+                      {site.pedidos.productos.map((p) => (
+                        <option value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      for="ped-tamano"
+                      class="block text-sm font-medium text-ink mb-1.5"
+                    >
+                      Tamaño / Porciones
+                    </label>
+                    <select
+                      id="ped-tamano"
+                      name="tamano"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2.5 text-sm rounded-(--radius-ui)"
+                    >
+                      {site.pedidos.tamanos.map((t) => (
+                        <option value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      for="ped-sabor"
+                      class="block text-sm font-medium text-ink mb-1.5"
+                    >
+                      Sabor o variante
+                    </label>
+                    <select
+                      id="ped-sabor"
+                      name="sabor"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2.5 text-sm rounded-(--radius-ui)"
+                    >
+                      {site.pedidos.sabores.map((s) => (
+                        <option value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      for="ped-fecha"
+                      class="block text-sm font-medium text-ink mb-1.5"
+                    >
+                      Fecha estimada de entrega
+                    </label>
+                    <input
+                      type="date"
+                      id="ped-fecha"
+                      name="fecha"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2.5 text-sm rounded-(--radius-ui)"
+                    />
+                  </div>
+                </div>
+
+                <fieldset class="space-y-2">
+                  <legend class="text-sm font-medium text-ink">
+                    Modalidad de entrega
+                  </legend>
+                  <div class="flex flex-wrap gap-6 pt-1">
+                    {site.pedidos.entrega.map((modo, idx) => (
+                      <label class="inline-flex items-center gap-2 text-sm text-ink/90 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="entrega"
+                          value={modo}
+                          checked={idx === 0}
+                          class="accent-primary"
+                        />
+                        <span>{modo}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div>
+                  <label
+                    for="ped-dedicatoria"
+                    class="block text-sm font-medium text-ink mb-1.5"
+                  >
+                    Dedicatoria en placa o indicaciones de entrega (opcional)
+                  </label>
+                  <textarea
+                    id="ped-dedicatoria"
+                    name="dedicatoria"
+                    rows="2"
+                    class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2 text-sm rounded-(--radius-ui)"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full sm:w-auto px-7 py-3.5 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) border border-primary text-sm font-medium motion-safe:transition-colors"
+                >
+                  Enviar solicitud por WhatsApp
+                </button>
+              </form>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "nosotros") {
+        return (
+          <section
+            id="nosotros"
+            class="py-(--space-section) px-5 md:px-10 bg-surface-alt border-b border-ink/15"
+          >
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div class="lg:col-span-5">
+                <ImagenMarco
+                  imagen={site.nosotros.imagen}
+                  aspectClass="aspect-4/5"
+                />
+              </div>
+              <div class="lg:col-span-7 space-y-8">
+                <div class="space-y-4">
+                  <h2 class="font-heading text-3xl sm:text-5xl leading-tight text-ink">
+                    {site.nosotros.titulo}
+                  </h2>
+                  <p class="text-base text-ink/80 leading-relaxed max-w-2xl">
+                    {site.nosotros.historia}
+                  </p>
+                </div>
+
+                <dl class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-ink/15">
+                  {site.nosotros.datos.map((dato) => (
+                    <div class="space-y-1">
+                      <dt class="text-xs text-accent">{dato.etiqueta}</dt>
+                      <dd class="font-heading text-2xl text-ink">
+                        {dato.valor}
+                      </dd>
+                      <dd class="text-xs text-ink/75 leading-relaxed">
+                        {dato.detalle}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (
+        seccionId === "galeria" &&
+        flags.mostrarGaleria &&
+        site.galeria.length > 0
+      ) {
+        return (
+          <section
+            id="galeria"
+            class="py-(--space-section) px-5 md:px-10 border-b border-ink/15"
+          >
+            <div class="max-w-7xl mx-auto space-y-10">
+              <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                Vitrina y taller
+              </h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {site.galeria.map((img, idx) => (
+                  <ImagenMarco
+                    imagen={img}
+                    aspectClass={idx % 2 === 0 ? "aspect-square" : "aspect-4/5"}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "eventos" && flags.mostrarEventos) {
+        return (
+          <section
+            id="eventos"
+            class="py-(--space-section) px-5 md:px-10 bg-surface-alt border-b border-ink/15"
+          >
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div class="lg:col-span-6 space-y-6">
+                <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                  {site.eventos.titulo}
+                </h2>
+                <p class="text-base text-ink/80 leading-relaxed">
+                  {site.eventos.descripcion}
+                </p>
+                <ul class="divide-y divide-ink/15 border-t border-b border-ink/15">
+                  {site.eventos.items.map((item) => (
+                    <li class="py-4 space-y-1">
+                      <h3 class="font-medium text-ink">{item.titulo}</h3>
+                      <p class="text-sm text-ink/75">{item.detalle}</p>
+                    </li>
+                  ))}
+                </ul>
+                <div class="pt-2">
+                  <a
+                    href={waHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block underline underline-offset-4 text-sm text-accent hover:text-ink"
+                  >
+                    Cotizar atención para eventos por WhatsApp
+                  </a>
+                </div>
+              </div>
+              <div class="lg:col-span-6">
+                <ImagenMarco
+                  imagen={site.eventos.imagen}
+                  aspectClass="aspect-4/3"
+                />
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (
+        seccionId === "testimonios" &&
+        flags.mostrarTestimonios &&
+        site.testimonios.length > 0
+      ) {
+        return (
+          <section
+            id="testimonios"
+            class="py-(--space-section) px-5 md:px-10 border-b border-ink/15"
+          >
+            <div class="max-w-6xl mx-auto space-y-10">
+              <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                Lo que comentan nuestros clientes
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                {site.testimonios.map((t) => (
+                  <blockquote class="border-l border-ink/30 pl-6 space-y-3">
+                    <p class="font-heading text-xl sm:text-2xl text-ink leading-relaxed">
+                      “{t.cita}”
+                    </p>
+                    <footer class="text-xs text-ink/75">
+                      <strong class="text-ink font-medium">{t.autor}</strong>
+                      {t.contexto && <span> — {t.contexto}</span>}
+                    </footer>
+                  </blockquote>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "ubicacion") {
+        const mapUrl = site.ubicacion.mapaEmbedUrl;
+        const validEmbed =
+          mapUrl.startsWith("https://") && !mapUrl.includes("[");
+        return (
+          <section
+            id="ubicacion"
+            class="py-(--space-section) px-5 md:px-10 bg-surface-alt border-b border-ink/15"
+          >
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div class="lg:col-span-5 space-y-6">
+                <div class="space-y-2">
+                  <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                    Visítanos en tienda
+                  </h2>
+                  <p class="text-base text-ink/90">
+                    {site.negocio.direccion}, {site.negocio.distrito}
+                  </p>
+                  {site.negocio.referencia && (
+                    <p class="text-sm text-ink/75">{site.negocio.referencia}</p>
+                  )}
+                </div>
+
+                <table class="w-full text-sm border-t border-b border-ink/15">
+                  <caption class="sr-only">
+                    Horarios de atención semanal
+                  </caption>
+                  <thead>
+                    <tr class="border-b border-ink/15 text-left text-ink/70">
+                      <th scope="col" class="py-2.5 font-normal">
+                        Días
+                      </th>
+                      <th scope="col" class="py-2.5 font-normal text-right">
+                        Horario
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-ink/15">
+                    {site.ubicacion.horarios.map((h) => (
+                      <tr>
+                        <td class="py-3 text-ink">{h.dias}</td>
+                        <td class="py-3 text-right text-ink/85">{h.horas}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <p class="text-sm text-ink/75 leading-relaxed">
+                  {site.ubicacion.comoLlegar}
+                </p>
+              </div>
+
+              <div class="lg:col-span-7">
+                <div class="aspect-16/10 bg-surface border border-ink/15 rounded-(--radius-ui) overflow-hidden flex items-center justify-center">
+                  {validEmbed ? (
+                    <iframe
+                      src={mapUrl}
+                      title={`Mapa de ubicación de ${site.negocio.nombre}`}
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                      class="w-full h-full border-0"
+                    />
+                  ) : (
+                    <div class="p-8 text-center text-sm text-ink/75 space-y-1">
+                      <p class="font-medium text-ink">Mapa de ubicación</p>
+                      <p>
+                        {site.negocio.direccion}, {site.negocio.distrito}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "faq" && site.faq.length > 0) {
+        return (
+          <section
+            id="faq"
+            class="py-(--space-section) px-5 md:px-10 border-b border-ink/15"
+          >
+            <div class="max-w-4xl mx-auto space-y-8">
+              <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                Preguntas frecuentes
+              </h2>
+              <div class="divide-y divide-ink/15 border-t border-b border-ink/15">
+                {site.faq.map((item) => (
+                  <details class="py-5 group">
+                    <summary class="font-medium text-ink cursor-pointer list-none flex justify-between items-center gap-4">
+                      <span>{item.pregunta}</span>
+                      <span class="text-accent text-sm">+</span>
+                    </summary>
+                    <p class="pt-3 text-sm text-ink/80 leading-relaxed">
+                      {item.respuesta}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      if (seccionId === "contacto") {
+        return (
+          <section id="contacto" class="py-(--space-section) px-5 md:px-10">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div class="lg:col-span-6 space-y-5">
+                <h2 class="font-heading text-3xl sm:text-4xl text-ink">
+                  Contacto directo
+                </h2>
+                <p class="text-sm sm:text-base text-ink/80 leading-relaxed">
+                  Para consultas sobre disponibilidad del día en vitrina,
+                  reservas o pedidos especiales, escríbenos directamente a
+                  nuestro WhatsApp de tienda.
+                </p>
+                <div class="space-y-1 text-sm text-ink/85">
+                  <p>Teléfono / WhatsApp: {site.contacto.telefonoMostrar}</p>
+                  <p>Correo electrónico: {site.contacto.email}</p>
+                </div>
+                <div class="pt-2">
+                  <a
+                    href={waHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block px-7 py-3.5 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) border border-primary text-sm font-medium motion-safe:transition-colors"
+                  >
+                    Conversar por WhatsApp
+                  </a>
+                </div>
+              </div>
+
+              {flags.mostrarFormulario && (
+                <form
+                  action={`mailto:${site.contacto.email}`}
+                  method="post"
+                  enctype="text/plain"
+                  class="lg:col-span-6 bg-surface-alt border border-ink/15 p-6 sm:p-8 rounded-(--radius-ui) space-y-4"
+                >
+                  <div>
+                    <label
+                      for="cnt-nombre"
+                      class="block text-sm font-medium text-ink mb-1"
+                    >
+                      Nombre completo
+                    </label>
+                    <input
+                      id="cnt-nombre"
+                      name="nombre"
+                      type="text"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2 text-sm rounded-(--radius-ui)"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      for="cnt-correo"
+                      class="block text-sm font-medium text-ink mb-1"
+                    >
+                      Correo o teléfono
+                    </label>
+                    <input
+                      id="cnt-correo"
+                      name="contacto"
+                      type="text"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2 text-sm rounded-(--radius-ui)"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      for="cnt-mensaje"
+                      class="block text-sm font-medium text-ink mb-1"
+                    >
+                      Consulta
+                    </label>
+                    <textarea
+                      id="cnt-mensaje"
+                      name="mensaje"
+                      rows="3"
+                      required
+                      class="w-full bg-surface text-ink border border-ink/15 px-3.5 py-2 text-sm rounded-(--radius-ui)"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="px-6 py-3 bg-primary text-on-primary hover:bg-primary-hover rounded-(--radius-ui) text-sm font-medium"
+                  >
+                    Enviar mensaje
+                  </button>
+                </form>
+              )}
+            </div>
+          </section>
+        );
+      }
+
+      return null;
+    })
+  }
+</Layout>
+
+<script>
+  const formPedidos = document.getElementById(
+    "form-pedidos-wa",
+  ) as HTMLFormElement | null;
+  if (formPedidos) {
+    const inputFecha = document.getElementById(
+      "ped-fecha",
+    ) as HTMLInputElement | null;
+    const horasMin = Number(formPedidos.dataset.horas ?? "48");
+
+    if (inputFecha) {
+      const minDate = new Date(Date.now() + horasMin * 60 * 60 * 1000);
+      const yyyy = minDate.getFullYear();
+      const mm = String(minDate.getMonth() + 1).padStart(2, "0");
+      const dd = String(minDate.getDate()).padStart(2, "0");
+      inputFecha.min = `${yyyy}-${mm}-${dd}`;
+      inputFecha.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    formPedidos.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const formData = new FormData(formPedidos);
+      const phone = formPedidos.dataset.whatsapp ?? "";
+      const negocio = formPedidos.dataset.negocio ?? "";
+
+      const lineas = [
+        `Hola ${negocio}, quisiera consultar disponibilidad para el siguiente encargo:`,
+        `- Producto: ${formData.get("producto")}`,
+        `- Tamaño: ${formData.get("tamano")}`,
+        `- Sabor: ${formData.get("sabor")}`,
+        `- Fecha solicitada: ${formData.get("fecha")}`,
+        `- Modalidad: ${formData.get("entrega")}`,
+      ];
+
+      const dedicatoria = String(formData.get("dedicatoria") ?? "").trim();
+      if (dedicatoria) {
+        lineas.push(`- Dedicatoria / Nota: ${dedicatoria}`);
+      }
+
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(lineas.join("\n"))}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+  }
+</script>

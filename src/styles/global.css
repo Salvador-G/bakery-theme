@@ -1,1 +1,84 @@
 @import "tailwindcss";
+
+@theme static {
+  --color-surface: #14110F;
+  --color-surface-alt: #1E1915;
+  --color-ink: #EDE6DA;
+  --color-primary: #C8A465;
+  --color-on-primary: #14110F;
+  --color-primary-hover: #DDBB7E;
+  --color-accent: #D4946A;
+
+  --font-heading: 'Newsreader', Georgia, serif;
+  --font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+
+  --radius-ui: 0px;
+  --space-section: 6rem;
+}
+
+/* Precedencia 2: html[data-preset="x"] sobrescribe los valores por defecto de @theme static */
+html[data-preset="sobrio"] {
+  --color-surface: #14110F;
+  --color-surface-alt: #1E1915;
+  --color-ink: #EDE6DA;
+  --color-primary: #C8A465;
+  --color-on-primary: #14110F;
+  --color-primary-hover: #DDBB7E;
+  --color-accent: #D4946A;
+  --font-heading: 'Newsreader', Georgia, serif;
+  --font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+  --radius-ui: 0px;
+  --space-section: 6rem;
+}
+
+html[data-preset="editorial"] {
+  --color-surface: #F7F6F3;
+  --color-surface-alt: #ECEAE5;
+  --color-ink: #1A1A1A;
+  --color-primary: #6B1F2E;
+  --color-on-primary: #F7F6F3;
+  --color-primary-hover: #4E1521;
+  --color-accent: #7A5C1E;
+  --font-heading: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Albert Sans', system-ui, sans-serif;
+  --radius-ui: 0px;
+  --space-section: 5.5rem;
+}
+
+html[data-preset="calido"] {
+  --color-surface: #F2EBDF;
+  --color-surface-alt: #E7DDCC;
+  --color-ink: #2B2118;
+  --color-primary: #5A3A24;
+  --color-on-primary: #F2EBDF;
+  --color-primary-hover: #402515;
+  --color-accent: #5E6325;
+  --font-heading: 'Young Serif', Georgia, serif;
+  --font-sans: 'Karla', system-ui, sans-serif;
+  --radius-ui: 6px;
+  --space-section: 4.25rem;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+}

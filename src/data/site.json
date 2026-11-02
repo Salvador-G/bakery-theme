@@ -1,0 +1,382 @@
+{
+  "negocio": {
+    "nombre": "[Nombre de la Cafetería o Pastelería]",
+    "tipo": "pasteleria",
+    "lema": "Panadería artesanal y pastelería de vitrina horneada cada mañana",
+    "distrito": "Miraflores",
+    "ciudad": "Lima",
+    "direccion": "[Av. Ejemplo 123, Miraflores]",
+    "referencia": "[A dos cuadras del Parque Kennedy]"
+  },
+  "diseno": {
+    "preset": "sobrio",
+    "colores": {},
+    "orden": [
+      "hero",
+      "destacados",
+      "carta-resumen",
+      "pedidos",
+      "nosotros",
+      "galeria",
+      "eventos",
+      "testimonios",
+      "ubicacion",
+      "faq",
+      "contacto"
+    ],
+    "variantes": {
+      "hero": "dividido",
+      "servicios": "lista"
+    }
+  },
+  "flags": {
+    "mostrarPrecios": true,
+    "mostrarPedidos": true,
+    "mostrarEventos": true,
+    "mostrarGaleria": true,
+    "mostrarTestimonios": true,
+    "mostrarFormulario": false
+  },
+  "hero": {
+    "etiqueta": "Obrador diario",
+    "titulo": "Masa madre, mantequilla de establo y fermentación lenta",
+    "subtitulo": "Trabajamos con harinas sin blanquear, cacao de origen nacional y fruta de estación para nuestra vitrina diaria y encargos.",
+    "ctaPrimario": {
+      "texto": "Explorar la carta",
+      "url": "/carta"
+    },
+    "ctaSecundario": {
+      "texto": "Hacer un encargo",
+      "url": "#pedidos"
+    },
+    "imagen": {
+      "src": "",
+      "alt": "Mesa de madera con hogazas de masa madre y laminados recién horneados",
+      "placeholder": "Foto principal de vitrina o mesa de panadería (1600x1200)"
+    }
+  },
+  "destacados": [
+    {
+      "nombre": "Croissant de mantequilla",
+      "descripcion": "Laminado de 72 horas de fermentación en frío con mantequilla sin sal.",
+      "precio": 9.5,
+      "imagen": {
+        "src": "",
+        "alt": "Croissant dorado mostrando su alveolado interior",
+        "placeholder": "Croissant laminado (800x1000)"
+      }
+    },
+    {
+      "nombre": "Tarta vasca de queso",
+      "descripcion": "Interior cremoso y corteza caramelizada a alta temperatura. Porción individual.",
+      "precio": 18.0,
+      "imagen": {
+        "src": "",
+        "alt": "Porción de tarta de queso horneada al estilo vasco",
+        "placeholder": "Tarta vasca (800x1000)"
+      }
+    },
+    {
+      "nombre": "Hogaza de campo",
+      "descripcion": "Trigo panadero, 20% centeno integral y fermentación natural con masa madre de cultivo propio.",
+      "precio": 22.0,
+      "imagen": {
+        "src": "",
+        "alt": "Hogaza de masa madre cortada por la mitad",
+        "placeholder": "Hogaza de campo (800x1000)"
+      }
+    },
+    {
+      "nombre": "Tartaleta de limón sutil y merengue",
+      "descripcion": "Base de masa sablée de almendras, crema ácida de limón norteño y merengue italiano.",
+      "precio": 16.5,
+      "imagen": {
+        "src": "",
+        "alt": "Tartaleta de limón con merengue tostado",
+        "placeholder": "Tartaleta de limón (800x1000)"
+      }
+    }
+  ],
+  "carta": {
+    "avisoAlergenos": "Todos nuestros productos se elaboran en un mismo obrador donde se procesan trigo (gluten), lácteos, huevos, frutos secos de cáscara, maní, soya y ajonjolí. Si tienes una alergia alimentaria severa, consúltanos por WhatsApp antes de realizar tu pedido.",
+    "categorias": [
+      {
+        "id": "bolleria-y-panes",
+        "nombre": "Bollería y panes de masa madre",
+        "descripcion": "Horneados todos los días a las 7:30 a. m. Disponibles hasta agotar la tanda del día.",
+        "imagen": {
+          "src": "",
+          "alt": "Bandeja de bollería laminada y panes rústicos",
+          "placeholder": "Categoría Bollería (1200x800)"
+        },
+        "items": [
+          {
+            "nombre": "Croissant clásico",
+            "descripcion": "Laminado francés de corteza crujiente y miga elástica.",
+            "precio": 9.5,
+            "precioDesde": false,
+            "alergenos": ["gluten", "lácteos", "huevo"]
+          },
+          {
+            "nombre": "Pain au chocolat",
+            "descripcion": "Masa hojaldrada con dos barras de chocolate oscuro al 70% de cacao peruano.",
+            "precio": 11.0,
+            "precioDesde": false,
+            "alergenos": ["gluten", "lácteos", "huevo", "soya"]
+          },
+          {
+            "nombre": "Rollo de cardamomo y naranja",
+            "descripcion": "Masa brioche trenzada con mantequilla especiada y ralladura de naranja.",
+            "precio": 12.0,
+            "precioDesde": false,
+            "alergenos": ["gluten", "lácteos", "huevo"]
+          },
+          {
+            "nombre": "Hogaza de masa madre (850 g)",
+            "descripcion": "Fermentación lenta de 24 horas. Corteza tostada y miga húmeda.",
+            "precio": 22.0,
+            "precioDesde": false,
+            "alergenos": ["gluten"]
+          }
+        ]
+      },
+      {
+        "id": "pasteleria-de-vitrina",
+        "nombre": "Pastelería de vitrina y tortas",
+        "descripcion": "Porciones individuales en tienda y tortas enteras bajo encargo.",
+        "imagen": {
+          "src": "",
+          "alt": "Vitrina con tartas de frutas y pasteles de chocolate",
+          "placeholder": "Categoría Pastelería (1200x800)"
+        },
+        "items": [
+          {
+            "nombre": "Tarta de chocolate 70% y sal de Maras",
+            "descripcion": "Sablée de cacao, ganache montada de origen San Martín y escamas de sal.",
+            "precio": 19.0,
+            "precioDesde": false,
+            "alergenos": ["gluten", "lácteos", "huevo"]
+          },
+          {
+            "nombre": "Milhojas de manjar de olla",
+            "descripcion": "Hojaldre invertido caramelizado relleno al momento con manjar blanco casero.",
+            "precio": 17.5,
+            "precioDesde": false,
+            "alergenos": ["gluten", "lácteos"]
+          },
+          {
+            "nombre": "Torta entera de celebración",
+            "descripcion": "Cotización según número de porciones y acabado.",
+            "precio": 95.0,
+            "precioDesde": true,
+            "alergenos": ["gluten", "lácteos", "huevo", "frutos secos"]
+          }
+        ]
+      },
+      {
+        "id": "cafe-y-bebidas",
+        "nombre": "Café e infusiones",
+        "descripcion": "Grano de especialidad tostado semanalmente y extracciones calibradas a diario.",
+        "imagen": {
+          "src": "",
+          "alt": "Taza de cappuccino servida sobre plato de cerámica",
+          "placeholder": "Categoría Café (1200x800)"
+        },
+        "items": [
+          {
+            "nombre": "Espresso doble",
+            "descripcion": "Extracción de 36 g con notas a panela y cacao.",
+            "precio": 8.0,
+            "precioDesde": false,
+            "alergenos": []
+          },
+          {
+            "nombre": "Cappuccino (8 oz)",
+            "descripcion": "Doble shot de espresso y leche texturizada. Opción de bebida de avena disponible.",
+            "precio": 11.5,
+            "precioDesde": false,
+            "alergenos": ["lácteos"]
+          },
+          {
+            "nombre": "Filtrado V60",
+            "descripcion": "Lote de estación preparado en mesa.",
+            "precio": 14.0,
+            "precioDesde": false,
+            "alergenos": []
+          }
+        ]
+      }
+    ]
+  },
+  "pedidos": {
+    "titulo": "Tortas enteras y encargos por WhatsApp",
+    "anticipacionHoras": 48,
+    "productos": [
+      "Torta de chocolate 70% y ganache",
+      "Tarta vasca de queso entera",
+      "Milhojas familiar de manjar de olla",
+      "Tarta de frutos rojos y pistacho",
+      "Caja de mini bollería surtida (12 und.)"
+    ],
+    "tamanos": [
+      "Pequeña (8 a 10 porciones)",
+      "Mediana (14 a 16 porciones)",
+      "Grande (20 a 24 porciones)",
+      "Caja de docena"
+    ],
+    "sabores": [
+      "Receta clásica de la casa",
+      "Chocolate oscuro y avellanas",
+      "Vainilla con frutos rojos y crema diplomática",
+      "Manjar de olla y nueces tostadas"
+    ],
+    "entrega": ["Recojo en local", "Delivery"],
+    "nota": "Los pedidos se confirman abonando el 50% por transferencia o billetera digital tras validar disponibilidad por WhatsApp. Precio referencial sujeto a confirmación: [desde S/ 95.00]."
+  },
+  "nosotros": {
+    "titulo": "Un oficio de paciencia, temperatura y materia prima honesta",
+    "historia": "Empezamos este obrador con la idea de recuperar los tiempos largos de la panadería y la pastelería clásica. Cada pieza que sale a vitrina se amasa, lamina y hornea en nuestro propio taller a la vista, respetando la estacionalidad de los ingredientes locales y el trabajo de nuestros proveedores.",
+    "imagen": {
+      "src": "",
+      "alt": "Manos de panadero formando hogazas sobre mesa enharinada",
+      "placeholder": "Foto del obrador o proceso (1000x1200)"
+    },
+    "datos": [
+      {
+        "etiqueta": "Fermentación",
+        "valor": "[24 a 72 h]",
+        "detalle": "Reposo en frío para desarrollar aroma y mejor digestibilidad."
+      },
+      {
+        "etiqueta": "Insumos",
+        "valor": "[Origen local]",
+        "detalle": "Cacao nacional, frutas de estación y mantequilla de crema."
+      },
+      {
+        "etiqueta": "Horneado",
+        "valor": "[Diario]",
+        "detalle": "Producción en lotes cortos sin conservantes ni premezclas."
+      }
+    ]
+  },
+  "galeria": [
+    {
+      "src": "",
+      "alt": "Detalle de hojaldre recién salido del horno",
+      "placeholder": "Galería 1: Hojaldre (900x900)"
+    },
+    {
+      "src": "",
+      "alt": "Extracción de café espresso en barra",
+      "placeholder": "Galería 2: Barra de café (900x1125)"
+    },
+    {
+      "src": "",
+      "alt": "Decoración de torta con frutas frescas",
+      "placeholder": "Galería 3: Decoración pastelería (900x900)"
+    },
+    {
+      "src": "",
+      "alt": "Interior del salón y vitrina principal",
+      "placeholder": "Galería 4: Salón (900x1125)"
+    }
+  ],
+  "eventos": {
+    "titulo": "Mesas dulces, desayunos corporativos y pedidos para eventos",
+    "descripcion": "Preparamos propuestas a medida para reuniones de directorio, celebraciones íntimas, coffee breaks y regalos empresariales con empaque de presentación.",
+    "items": [
+      {
+        "titulo": "Cajas de desayuno y brunch",
+        "detalle": "Selección de bollería recién horneada, sánguches en pan de masa madre, jugo natural y café."
+      },
+      {
+        "titulo": "Mesas de postres en formato bocado",
+        "detalle": "Mini tartaletas, choux, financiers y trufas de cacao para celebraciones y bodas."
+      },
+      {
+        "titulo": "Atención a cafeterías y restaurantes",
+        "detalle": "Abastecimiento programado de panes de molde, brioche y bollería congelada o horneada."
+      }
+    ],
+    "imagen": {
+      "src": "",
+      "alt": "Mesa servida con bocaditos de pastelería para evento",
+      "placeholder": "Foto de mesa de catering (1200x900)"
+    }
+  },
+  "testimonios": [
+    {
+      "cita": "[Testimonio real de cliente 1 sobre el producto o la atención en tienda]",
+      "autor": "[Nombre del cliente 1]",
+      "contexto": "[Cliente de tienda / Pedido de cumpleaños]"
+    },
+    {
+      "cita": "[Testimonio real de cliente 2 sobre encargos de tortas o panes de masa madre]",
+      "autor": "[Nombre del cliente 2]",
+      "contexto": "[Pedido por encargo]"
+    }
+  ],
+  "ubicacion": {
+    "horarios": [
+      { "dias": "Martes a Viernes", "horas": "07:30 – 20:00" },
+      { "dias": "Sábados", "horas": "08:00 – 20:30" },
+      { "dias": "Domingos", "horas": "08:30 – 18:00" },
+      { "dias": "Lunes", "horas": "Cerrado por mantenimiento de obrador" }
+    ],
+    "comoLlegar": "Contamos con estacionamiento municipal en la cuadra y biciparqueo en la entrada. Reparto a domicilio disponible en distritos aledaños previa coordinación.",
+    "mapaEmbedUrl": "[URL de iframe de Google Maps]",
+    "horariosSchema": [
+      {
+        "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "07:30",
+        "closes": "20:00"
+      },
+      {
+        "dayOfWeek": ["Saturday"],
+        "opens": "08:00",
+        "closes": "20:30"
+      },
+      {
+        "dayOfWeek": ["Sunday"],
+        "opens": "08:30",
+        "closes": "18:00"
+      }
+    ]
+  },
+  "faq": [
+    {
+      "pregunta": "¿Con cuánta anticipación debo encargar una torta entera?",
+      "respuesta": "Solicitamos un mínimo de 48 horas de anticipación para tortas del catálogo clásico. En vitrina contamos todos los días con un stock limitado de tortas medianas listas para llevar."
+    },
+    {
+      "pregunta": "¿Realizan envíos a domicilio?",
+      "respuesta": "Sí, coordinamos envíos programados por aplicativo o movilidad segura según el tipo de producto y el distrito de entrega."
+    },
+    {
+      "pregunta": "¿Qué medios de pago aceptan?",
+      "respuesta": "En tienda y por WhatsApp aceptamos tarjetas de débito/crédito, transferencias bancarias, Yape y Plin a nombre de [Razón Social S.A.C. - Cuenta / Número]."
+    }
+  ],
+  "contacto": {
+    "whatsapp": "[51900000000]",
+    "telefonoMostrar": "[+51 900 000 000]",
+    "email": "[hola@ejemplo.pe]",
+    "mensajeDefault": "Hola, vengo desde la web y quisiera realizar una consulta."
+  },
+  "footer": {
+    "razonSocial": "[RAZÓN SOCIAL DE EJEMPLO S.A.C.]",
+    "ruc": "[20000000000]",
+    "libroReclamacionesUrl": "[https://ejemplo.pe/libro-de-reclamaciones]",
+    "redes": {
+      "instagram": "https://instagram.com",
+      "facebook": "",
+      "tiktok": ""
+    },
+    "notaLegal": "Precios expresados en Soles (PEN), incluyen IGV."
+  },
+  "seo": {
+    "titulo": "[Nombre del Negocio] | Panadería y Pastelería en Miraflores, Lima",
+    "descripcion": "Panadería de masa madre, bollería laminada, café de especialidad y tortas por encargo en Miraflores, Lima.",
+    "ogImage": ""
+  }
+}

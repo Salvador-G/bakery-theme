@@ -1,0 +1,53 @@
+---
+import type { SiteData } from "../../lib/schema";
+import ImagenMarco from "../ImagenMarco.astro";
+
+interface Props {
+  site: SiteData;
+}
+
+const { site } = Astro.props;
+const mostrarPrecios = site.flags.mostrarPrecios;
+
+const formatPen = (val: number | null, desde: boolean) => {
+  if (val === null) return desde ? "Consultar" : "";
+  const num = `S/ ${val.toFixed(2)}`;
+  return desde ? `Desde ${num}` : num;
+};
+---
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+  {
+    site.carta.categorias.map((cat) => (
+      <article class="flex flex-col justify-between space-y-5 border-t border-ink/15 pt-6">
+        <div class="space-y-4">
+          <ImagenMarco imagen={cat.imagen} aspectClass="aspect-3/2" />
+          <h3 class="font-heading text-2xl text-ink">{cat.nombre}</h3>
+          <p class="text-sm text-ink/80 leading-relaxed">{cat.descripcion}</p>
+
+          <ul class="space-y-2.5 pt-2 border-t border-ink/15 text-sm">
+            {cat.items.slice(0, 3).map((item) => (
+              <li class="flex justify-between gap-4">
+                <span class="text-ink/90">{item.nombre}</span>
+                {mostrarPrecios && (
+                  <span class="text-ink font-medium shrink-0">
+                    {formatPen(item.precio, item.precioDesde)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="pt-2">
+          <a
+            href={`/carta#${cat.id}`}
+            class="inline-block text-sm text-accent underline underline-offset-4 hover:text-ink"
+          >
+            Ver todos los ítems de {cat.nombre}
+          </a>
+        </div>
+      </article>
+    ))
+  }
+</div>
