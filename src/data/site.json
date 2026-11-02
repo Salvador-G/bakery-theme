@@ -364,7 +364,7 @@
     "mensajeDefault": "Hola, vengo desde la web y quisiera realizar una consulta."
   },
   "footer": {
-    "razonSocial": "[RAZÓN SOCIAL DE EJEMPLO S.A.C.]",
+    "razonSocial": "Daniela y Coque Demo",
     "ruc": "[20000000000]",
     "libroReclamacionesUrl": "[https://ejemplo.pe/libro-de-reclamaciones]",
     "redes": {
@@ -375,7 +375,7 @@
     "notaLegal": "Precios expresados en Soles (PEN), incluyen IGV."
   },
   "seo": {
-    "titulo": "[Nombre del Negocio] | Panadería y Pastelería en Miraflores, Lima",
+    "titulo": "Daniela y Coque  | La mejor torta de chocolate de Lima",
     "descripcion": "Panadería de masa madre, bollería laminada, café de especialidad y tortas por encargo en Miraflores, Lima.",
     "ogImage": ""
   }
